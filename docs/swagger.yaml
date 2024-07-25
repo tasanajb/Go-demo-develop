@@ -1,0 +1,201 @@
+definitions:
+  anime.Anime:
+    properties:
+      activate:
+        type: boolean
+      createAt:
+        type: string
+      createBy:
+        type: string
+      genre:
+        type: string
+      id:
+        type: string
+      title:
+        type: string
+      updateAt:
+        type: string
+      updateBy:
+        type: string
+    type: object
+  character.Character:
+    properties:
+      activate:
+        type: boolean
+      animeID:
+        type: string
+      createAt:
+        type: string
+      createBy:
+        type: string
+      description:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+      updateAt:
+        type: string
+      updateBy:
+        type: string
+    type: object
+  character.CreateCharacterRequest:
+    properties:
+      animeID:
+        type: string
+      description:
+        type: string
+      name:
+        type: string
+      updateBy:
+        type: string
+    type: object
+  elasticsearch.CreateElasticIndexResponse:
+    properties:
+      index:
+        type: string
+    type: object
+  file_info.FileInfo:
+    properties:
+      activate:
+        type: boolean
+      createAt:
+        type: string
+      createBy:
+        type: string
+      description:
+        type: string
+      extension:
+        type: string
+      fileName:
+        type: string
+      id:
+        type: string
+      infoType:
+        type: string
+      updateAt:
+        type: string
+      updateBy:
+        type: string
+      url:
+        type: string
+    type: object
+info:
+  contact: {}
+paths:
+  /anime/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Get an anime by its ID
+      parameters:
+      - description: Anime ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successful response
+          schema:
+            $ref: '#/definitions/anime.Anime'
+      summary: Get an anime by ID
+      tags:
+      - Animes
+  /anime/demoKafka:
+    get:
+      consumes:
+      - application/json
+      description: Send kafka message
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successful response
+          schema:
+            $ref: '#/definitions/anime.Anime'
+      summary: Send kafka message
+      tags:
+      - Kafka Demo
+  /characters/create:
+    post:
+      consumes:
+      - application/json
+      description: create character and insert to elasticsearch
+      parameters:
+      - description: Character JSON
+        in: body
+        name: inputCharacter
+        required: true
+        schema:
+          $ref: '#/definitions/character.CreateCharacterRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successful response
+          schema:
+            $ref: '#/definitions/character.Character'
+      summary: create character and insert to elasticsearch
+      tags:
+      - Characters
+  /elasticsearch/create-character-index:
+    post:
+      consumes:
+      - application/json
+      description: create elastic character_index
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successful response
+          schema:
+            $ref: '#/definitions/elasticsearch.CreateElasticIndexResponse'
+      summary: create character index for elasticsearch
+      tags:
+      - Elasticsearch
+  /files/uploadFileImage:
+    post:
+      consumes:
+      - multipart/form-data
+      description: Upload a file image and store information
+      parameters:
+      - description: File to upload
+        in: formData
+        name: file
+        required: true
+        type: file
+      - description: File name
+        in: formData
+        name: fileName
+        type: string
+      - description: File description
+        in: formData
+        name: description
+        type: string
+      - description: Information type
+        enum:
+        - demo/characters
+        - demo/animes
+        in: formData
+        name: infoType
+        required: true
+        type: string
+      - description: Updated by
+        in: formData
+        name: updateBy
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successful response
+          schema:
+            $ref: '#/definitions/file_info.FileInfo'
+      summary: Upload a file image
+      tags:
+      - Files
+swagger: "2.0"
